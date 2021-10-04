@@ -12,16 +12,6 @@ void InitLink(LinkNode*& L){
     L->next = NULL;
 }
 
-void CreateLink(LinkNode*& L, ElemType a[], int n){
-    LinkNode* T;
-    for(int i=0; i<n; i++){
-        T = (LinkNode*)malloc(sizeof(LinkNode));
-        T->data = a[i];
-        T->next = L->next;
-        L->next = T;
-    }
-}
-
 void HeadIns(LinkNode*& L, ElemType a){
     LinkNode* T;
     T = (LinkNode*)malloc(sizeof(LinkNode));
@@ -35,6 +25,7 @@ void DispLink(LinkNode* L){
         cout << L->next->data << endl;
         L = L->next;
     }
+
     while(true){
         if(L->next==NULL){
             break;
@@ -45,27 +36,50 @@ void DispLink(LinkNode* L){
     }
 }
 
-LinkNode* NegativeFormer(LinkNode*& L){
-    LinkNode* R = L; // Replicas
-    LinkNode* T = L; // Temp pointer
-    LinkNode* S = T; // Successor of temp pointer
-    while(S->next!=NULL){
-        T = S->next; // refresh temp pointer
-        if(T->data<0){
-            S->next = T->next; // delete the node the temp pointer points now
-            T->next = L->next;
-            L->next = T; // head insert
-            L = L->next; // move negative integers sequentially
+LinkNode* ReverseMerge(LinkNode* L, LinkNode* M){
+    LinkNode* t1;
+    LinkNode* t2;
+    LinkNode* C;
+    InitLink(C);
+
+    while(L->next!=NULL && M->next!=NULL){
+        if(L->next->data < M->next->data){
+            t1 = L->next;
+            L->next = t1->next;
+            t1->next = C->next;
+            C->next = t1;
         }else{
-            S = T; // normal pointer progression
+            t2 = M->next;
+            M->next = t2->next;
+            t2->next = C->next;
+            C->next = t2;
         }
     }
-    return R;
+
+    while(L->next!=NULL){
+        t1 = L->next;
+        L->next = t1->next;
+        t1->next = C->next;
+        C->next = t1;
+    }
+
+    while(M->next!=NULL){
+        t2 = M->next;
+        M->next = t2->next;
+        t2->next = C->next;
+        C->next = t2;
+    }
+
+    free(L);
+    free(M);
+    return C;
 }
 
 int main(){
     LinkNode* L;
+    LinkNode* M;
     InitLink(L);
+    InitLink(M);
     int num;
     ElemType element;
 
@@ -76,10 +90,19 @@ int main(){
         cin >> element;
         HeadIns(L, element);
     }
-
-    cout << "The moved LinkNode:" << endl;
     // DispLink(L);
-    DispLink(NegativeFormer(L));
+
+    cout << "Please enter an integer to set the array's length:" << endl;
+    cin >> num;
+    cout << "Please enter some array elements one by one in a newline:" << endl;
+    for (int i=0; i<num; i++){
+        cin >> element;
+        HeadIns(M, element);
+    }
+    // DispLink(M);
+
+    cout << "The merged LinkNode:" << endl;
+    DispLink(ReverseMerge(L, M));
     cout << "As shown, the time complexity is O(n); the space complexity if O(1)" << endl;
 
     return 0;

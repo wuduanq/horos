@@ -23,6 +23,7 @@ void DispArray(Array* L){
     for(int i=0; i<L->length; i++){
         cout << L->data[i] << endl;
     }
+    free(L);
 }
 
 Array* FindMerge(Array*& L, Array*& M){
@@ -87,6 +88,8 @@ int main(){
     DispArray(FindMerge(L, M));
     cout << "As shown, the time complexity is O(n); the space complexity if O(n)" << endl;
 
+    free(L);
+    free(M);
     return 0;
 }
 

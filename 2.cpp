@@ -33,6 +33,7 @@ void DispArray(Array* L){
     for(int i=0; i<L->length; i++){
         cout << L->data[i] << endl;
     }
+    free(L);
 }
 
 int main(){
@@ -48,6 +49,7 @@ int main(){
     cout << "The positive array is:" << endl;
     DispArray(DeleteNegative(L));
     cout << "As shown, the time complexity is O(n); the space complexity if O(n)" << endl;
-
+    
+    free(L);
     return 0;
 }
